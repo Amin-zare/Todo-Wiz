@@ -30,6 +30,18 @@ function App() {
     setTodos(fetchedTodos)
   }
 
+  const deleteTodo = (id: string): void => {
+    todosApi
+      .delete(`/todos/${id}.json`)
+      .then(response => {
+        console.log(response)
+        setTodos(todos.filter((todo: Todo) => todo.id !== id))
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   return (
     <>
       <div className='App'>
@@ -64,7 +76,7 @@ function App() {
                   </div>
                 </nav>
                 {todos.map((todo: Todo) => (
-                  <TodoItem key={todo.id} todo={todo} />
+                  <TodoItem key={todo.id} todo={todo} deleteTodo={deleteTodo} />
                 ))}
               </div>
             </div>
