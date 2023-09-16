@@ -42,6 +42,24 @@ function App() {
       })
   }
 
+  const editTodo = (id: string, updatedTitle: string): void => {
+    todosApi
+      .put(`/todos/${id}.json`, { is_done: false, title: updatedTitle })
+      .then(() => {
+        // Update the state only if the API call is successful
+        const updatedTodos = todos.map(todo => {
+          if (todo.id === id) {
+            todo.title = updatedTitle
+          }
+          return todo
+        })
+        setTodos(updatedTodos)
+      })
+      .catch(error => {
+        console.log('Error updating todo:', error)
+      })
+  }
+
   return (
     <>
       <div className='App'>
@@ -76,7 +94,12 @@ function App() {
                   </div>
                 </nav>
                 {todos.map((todo: Todo) => (
-                  <TodoItem key={todo.id} todo={todo} deleteTodo={deleteTodo} />
+                  <TodoItem
+                    key={todo.id}
+                    todo={todo}
+                    deleteTodo={deleteTodo}
+                    editTodo={editTodo}
+                  />
                 ))}
               </div>
             </div>
