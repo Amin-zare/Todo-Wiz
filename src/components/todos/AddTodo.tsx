@@ -1,12 +1,53 @@
-const AddTodo: React.FC = () => {
+import React, { useState } from 'react'
+import todosApi from '../../api/apiInstance'
+import Todo from '../models/Todo'
+
+// Define the type for the props expected by AddTodo
+interface Props {
+  addTodo: (todo: Todo) => void
+}
+
+const AddTodo: React.FC<Props> = ({ addTodo }) => {
+  const [newTodo, setNewTodo] = useState<string>('') // Declare type for state
+  const [error, setError] = useState<string | null>(null) // To handle error messages
+
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const todo: Todo = { title: newTodo, is_done: false } // Declare type for todo
+    todosApi
+      .post(`/todos.json`, todo)
+      .then(response => {
+        console.log(response)
+        const id = response.data.name // Extract id from Firebase response
+        const completeTodo = { ...todo, id } // Add id to todo
+        addTodo(completeTodo) // Update the parent component's state
+        setNewTodo('') // Clear the input
+        setError(null) // Clear any previous errors
+      })
+      .catch(err => {
+        console.log(err)
+        setError('Failed to add new Todo.') // Set the error message
+      })
+  }
+
   return (
-    <div className="form-inline">
-      <div className="form-group d-flex">
-        <input type="text" className="form-control mx-sm-3" placeholder="i want to do ..." />
-        <button className="btn btn-primary">add</button>
+    <form onSubmit={submitHandler} className='form-inline'>
+      <div className='form-group d-flex'>
+        <input
+          value={newTodo}
+          onChange={e => setNewTodo(e.target.value)}
+          type='text'
+          className='form-control mx-sm-3'
+          placeholder='I want to do ...'
+        />
+        <button type='submit' className='btn btn-primary'>
+          Add
+        </button>
       </div>
-    </div>
+      {error && <div className='alert alert-danger mt-2'>{error}</div>}
+    </form>
   )
 }
 
-export default AddTodo;
+export default AddTodo
