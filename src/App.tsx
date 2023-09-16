@@ -2,7 +2,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Header from './components/layouts/Header'
 import AddTodo from './components/todos/AddTodo'
 import TodoItem from './components/todos/TodoItem'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import todosApi from '../src/api/apiInstance'
 import Todo from './components/models/Todo'
 
 function App() {
@@ -11,6 +12,22 @@ function App() {
   const addTodo = (newTodo: Todo) => {
     // Assuming `todos` is an array
     setTodos([...todos, newTodo])
+  }
+  useEffect(() => {
+    todosApi
+      .get(`/todos.json`)
+      .then(response => jsonHandler(response.data))
+      .catch(err => console.log(err))
+  }, [])
+
+  const jsonHandler = (data: Todo) => {
+    const fetchedTodos = Object.entries(data).map(([id, value]) => {
+      return {
+        ...value,
+        id,
+      }
+    })
+    setTodos(fetchedTodos)
   }
 
   return (
@@ -46,7 +63,9 @@ function App() {
                     </a>
                   </div>
                 </nav>
-                <TodoItem />
+                {todos.map((todo: Todo) => (
+                  <TodoItem key={todo.id} todo={todo} />
+                ))}
               </div>
             </div>
           </div>
