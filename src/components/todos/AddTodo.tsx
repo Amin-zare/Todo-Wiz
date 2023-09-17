@@ -34,11 +34,13 @@ const AddTodo: React.FC<Props> = ({ addTodo }) => {
     <form onSubmit={submitHandler} className='form-inline'>
       <div className='form-group d-flex'>
         <input
+          id='newTodo'
           value={newTodo}
           onChange={e => setNewTodo(e.target.value)}
           type='text'
           className='form-control mx-sm-3'
           placeholder='I want to do ...'
+          ref={inputRef => inputRef && inputRef.focus()}
         />
         <button type='submit' className='btn btn-primary'>
           Add

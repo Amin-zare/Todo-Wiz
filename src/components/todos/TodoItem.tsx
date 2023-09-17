@@ -27,16 +27,18 @@ const TodoItem: React.FC<Props> = ({
         {isEditing ? (
           <>
             <input
+              id='saveTodo'
               type='text'
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}
+              ref={editInputRef => editInputRef && editInputRef.focus()}
             />
             <button
               type='button'
               className='btn btn-success btn-sm me-1'
               onClick={handleEdit}
             >
-              Save
+              Update
             </button>
           </>
         ) : (

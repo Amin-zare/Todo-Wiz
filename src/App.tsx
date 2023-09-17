@@ -61,14 +61,14 @@ function App() {
         <main>
           <section className='jumbotron'>
             <div className='container d-flex flex-column align-items-center'>
-              <h1 className='jumbotron-heading'>Never forget!</h1>
+              <h1 className='jumbotron-heading mt-4'>Never forget!</h1>
               <p className='lead text-muted'>
-                your to-do list is your mental net
+                Your to-do list is your mental net
               </p>
               <AddTodo addTodo={addTodo} />
             </div>
           </section>
-          <div className='todosList'>
+          <div className='todosList mt-4'>
             <div className='container'>
               <div className='d-flex flex-column align-items-center '>
                 <nav className='col-6 mb-3'>
@@ -80,7 +80,7 @@ function App() {
                       }`}
                       id='nav-home-tab'
                     >
-                      undone
+                      💬 Undone&nbsp;
                       <span className=' badge-secondary'>
                         {todos.filter(item => item.is_done === false).length}
                       </span>
@@ -92,7 +92,7 @@ function App() {
                       }`}
                       id='nav-profile-tab'
                     >
-                      done
+                      ✅ Done&nbsp;
                       <span className=' badge-success'>
                         {todos.filter(item => item.is_done === true).length}
                       </span>
