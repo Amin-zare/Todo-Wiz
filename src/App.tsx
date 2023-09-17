@@ -79,6 +79,7 @@ function App() {
                         filter === filterTypes.undone ? 'active' : ''
                       }`}
                       id='nav-home-tab'
+                      role='button'
                     >
                       💬 Undone&nbsp;
                       <span className=' badge-secondary'>
@@ -91,6 +92,7 @@ function App() {
                         filter === filterTypes.done ? 'active' : ''
                       }`}
                       id='nav-profile-tab'
+                      role='button'
                     >
                       ✅ Done&nbsp;
                       <span className=' badge-success'>
