@@ -19,11 +19,15 @@ const AddTodo: React.FC<Props> = ({ addTodo }) => {
       return
     }
 
+    setError(null)
+
     addTodo({
       title: newTodo,
       is_done: false,
       id: Math.random().toString(),
     })
+
+    setNewTodo('')
   }
 
   return (
