@@ -5,9 +5,11 @@ import TodoItem from './components/todos/TodoItem'
 import { useEffect, useState } from 'react'
 import todosApi from '../src/api/apiInstance'
 import Todo from './components/models/Todo'
+import { filterTypes } from './components/enums/filterTypes'
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]) // Initialize state
+  const [filter, setFilter] = useState<filterTypes>(filterTypes.undone)
 
   const addTodo = (newTodo: Todo) => {
     // Assuming `todos` is an array
@@ -60,6 +62,27 @@ function App() {
       })
   }
 
+  const toggleTodoStatus = (id: string, status: boolean): void => {
+    todosApi
+      .patch(`/todos/${id}.json`, { is_done: !status })
+      .then(() => {
+        const updatedTodos = todos.map(todo => {
+          if (todo.id === id) {
+            return { ...todo, is_done: !todo.is_done }
+          }
+          return todo
+        })
+        setTodos(updatedTodos)
+      })
+      .catch(error => {
+        console.log('Error updating todo:', error)
+      })
+  }
+
+  const filteredTodos = todos.filter((todo: Todo) =>
+    filter === filterTypes.done ? todo.is_done : !todo.is_done,
+  )
+
   return (
     <>
       <div className='App'>
@@ -80,25 +103,38 @@ function App() {
                 <nav className='col-6 mb-3'>
                   <div className='nav nav-tabs' id='nav-tab' role='tablist'>
                     <a
-                      className='nav-item nav-link active font-weight-bold'
+                      onClick={() => setFilter(filterTypes.undone)}
+                      className={`'nav-item nav-link font-weight-bold' ${
+                        filter === filterTypes.undone ? 'active' : ''
+                      }`}
                       id='nav-home-tab'
                     >
-                      undone <span className=' badge-secondary'>9</span>
+                      undone
+                      <span className=' badge-secondary'>
+                        {todos.filter(item => item.is_done === false).length}
+                      </span>
                     </a>
                     <a
-                      className='nav-item nav-link font-weight-bold'
+                      onClick={() => setFilter(filterTypes.done)}
+                      className={`'nav-item nav-link font-weight-bold' ${
+                        filter === filterTypes.done ? 'active' : ''
+                      }`}
                       id='nav-profile-tab'
                     >
-                      done <span className=' badge-success'>9</span>
+                      done
+                      <span className=' badge-success'>
+                        {todos.filter(item => item.is_done === true).length}
+                      </span>
                     </a>
                   </div>
                 </nav>
-                {todos.map((todo: Todo) => (
+                {filteredTodos.map((todo: Todo) => (
                   <TodoItem
                     key={todo.id}
                     todo={todo}
                     deleteTodo={deleteTodo}
                     editTodo={editTodo}
+                    toggleTodoStatus={toggleTodoStatus}
                   />
                 ))}
               </div>

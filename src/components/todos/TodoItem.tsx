@@ -5,9 +5,15 @@ interface Props {
   todo: Todo
   deleteTodo: (id: string) => void
   editTodo: (id: string, updatedTitle: string) => void
+  toggleTodoStatus: (id: string, is_done: boolean) => void
 }
 
-const TodoItem: React.FC<Props> = ({ todo, deleteTodo, editTodo }) => {
+const TodoItem: React.FC<Props> = ({
+  todo,
+  deleteTodo,
+  editTodo,
+  toggleTodoStatus,
+}) => {
   const [isEditing, setIsEditing] = useState(false)
   const [newTitle, setNewTitle] = useState(todo.title)
   const handleEdit = () => {
@@ -37,6 +43,15 @@ const TodoItem: React.FC<Props> = ({ todo, deleteTodo, editTodo }) => {
           <>
             <div>{todo.title}</div>
             <div>
+              <button
+                type='button'
+                className={`btn btn-sm me-1 ${
+                  todo.is_done ? ' btn-secondary' : 'btn-success'
+                } `}
+                onClick={() => toggleTodoStatus(todo.id!, todo.is_done)}
+              >
+                {todo.is_done ? 'Undone' : 'Done'}
+              </button>
               <button
                 type='button'
                 className='btn btn-info btn-sm me-1'
