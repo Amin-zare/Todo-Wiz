@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import todosApi from '../../api/apiInstance'
+// import todosApi from '../../api/apiInstance'
 import Todo from '../models/Todo'
 
 // Define the type for the props expected by AddTodo
@@ -14,32 +14,33 @@ const AddTodo: React.FC<Props> = ({ addTodo }) => {
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const todo: Todo = { title: newTodo, is_done: false } // Declare type for todo
-    todosApi
-      .post(`/todos.json`, todo)
-      .then(response => {
-        console.log(response)
-        const id = response.data.name // Extract id from Firebase response
-        const completeTodo = { ...todo, id } // Add id to todo
-        addTodo(completeTodo) // Update the parent component's state
-        setNewTodo('') // Clear the input
-        setError(null) // Clear any previous errors
-      })
-      .catch(err => {
-        console.log(err)
-        setError('Failed to add new Todo.') // Set the error message
-      })
+    if (!newTodo) {
+      setError('Please enter a todo')
+      return
+    }
+
+    setError(null)
+
+    addTodo({
+      title: newTodo,
+      is_done: false,
+      id: Math.random().toString(),
+    })
+
+    setNewTodo('')
   }
 
   return (
     <form onSubmit={submitHandler} className='form-inline'>
       <div className='form-group d-flex'>
         <input
+          id='newTodo'
           value={newTodo}
           onChange={e => setNewTodo(e.target.value)}
           type='text'
           className='form-control mx-sm-3'
           placeholder='I want to do ...'
+          ref={inputRef => inputRef && inputRef.focus()}
         />
         <button type='submit' className='btn btn-primary'>
           Add

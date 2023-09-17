@@ -3,7 +3,7 @@ import Header from './components/layouts/Header'
 import AddTodo from './components/todos/AddTodo'
 import TodoItem from './components/todos/TodoItem'
 import { useEffect, useState } from 'react'
-import todosApi from '../src/api/apiInstance'
+// import todosApi from '../src/api/apiInstance'
 import Todo from './components/models/Todo'
 import { filterTypes } from './components/enums/filterTypes'
 
@@ -13,70 +13,41 @@ function App() {
 
   const addTodo = (newTodo: Todo) => {
     // Assuming `todos` is an array
+    localStorage.setItem('TODOS', JSON.stringify([...todos, newTodo]))
     setTodos([...todos, newTodo])
   }
   useEffect(() => {
-    todosApi
-      .get(`/todos.json`)
-      .then(response => jsonHandler(response.data))
-      .catch(err => console.log(err))
+    setTodos(JSON.parse(localStorage.getItem('TODOS') || '[]'))
   }, [])
 
-  const jsonHandler = (data: Todo) => {
-    const fetchedTodos = Object.entries(data).map(([id, value]) => {
-      return {
-        ...value,
-        id,
-      }
-    })
-    setTodos(fetchedTodos)
-  }
-
   const deleteTodo = (id: string): void => {
-    todosApi
-      .delete(`/todos/${id}.json`)
-      .then(response => {
-        console.log(response)
-        setTodos(todos.filter((todo: Todo) => todo.id !== id))
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    setTodos(todos.filter((todo: Todo) => todo.id !== id))
+    localStorage.setItem(
+      'TODOS',
+      JSON.stringify(todos.filter((todo: Todo) => todo.id !== id)),
+    )
   }
 
   const editTodo = (id: string, updatedTitle: string): void => {
-    todosApi
-      .patch(`/todos/${id}.json`, { title: updatedTitle })
-      .then(() => {
-        // Update the state only if the API call is successful
-        const updatedTodos = todos.map(todo => {
-          if (todo.id === id) {
-            todo.title = updatedTitle
-          }
-          return todo
-        })
-        setTodos(updatedTodos)
-      })
-      .catch(error => {
-        console.log('Error updating todo:', error)
-      })
+    const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        todo.title = updatedTitle
+      }
+      return todo
+    })
+    setTodos(updatedTodos)
+    localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
   }
 
-  const toggleTodoStatus = (id: string, status: boolean): void => {
-    todosApi
-      .patch(`/todos/${id}.json`, { is_done: !status })
-      .then(() => {
-        const updatedTodos = todos.map(todo => {
-          if (todo.id === id) {
-            return { ...todo, is_done: !todo.is_done }
-          }
-          return todo
-        })
-        setTodos(updatedTodos)
-      })
-      .catch(error => {
-        console.log('Error updating todo:', error)
-      })
+  const toggleTodoStatus = (id: string): void => {
+    const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        return { ...todo, is_done: !todo.is_done }
+      }
+      return todo
+    })
+    setTodos(updatedTodos)
+    localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
   }
 
   const filteredTodos = todos.filter((todo: Todo) =>
@@ -90,14 +61,14 @@ function App() {
         <main>
           <section className='jumbotron'>
             <div className='container d-flex flex-column align-items-center'>
-              <h1 className='jumbotron-heading'>Never forget!</h1>
+              <h1 className='jumbotron-heading mt-4'>Never forget!</h1>
               <p className='lead text-muted'>
-                your to-do list is your mental net
+                Your to-do list is your mental net
               </p>
               <AddTodo addTodo={addTodo} />
             </div>
           </section>
-          <div className='todosList'>
+          <div className='todosList mt-4'>
             <div className='container'>
               <div className='d-flex flex-column align-items-center '>
                 <nav className='col-6 mb-3'>
@@ -109,7 +80,7 @@ function App() {
                       }`}
                       id='nav-home-tab'
                     >
-                      undone
+                      💬 Undone&nbsp;
                       <span className=' badge-secondary'>
                         {todos.filter(item => item.is_done === false).length}
                       </span>
@@ -121,7 +92,7 @@ function App() {
                       }`}
                       id='nav-profile-tab'
                     >
-                      done
+                      ✅ Done&nbsp;
                       <span className=' badge-success'>
                         {todos.filter(item => item.is_done === true).length}
                       </span>
