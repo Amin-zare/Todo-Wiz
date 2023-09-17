@@ -44,7 +44,7 @@ function App() {
 
   const editTodo = (id: string, updatedTitle: string): void => {
     todosApi
-      .put(`/todos/${id}.json`, { is_done: false, title: updatedTitle })
+      .patch(`/todos/${id}.json`, { title: updatedTitle })
       .then(() => {
         // Update the state only if the API call is successful
         const updatedTodos = todos.map(todo => {
