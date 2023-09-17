@@ -14,21 +14,11 @@ const AddTodo: React.FC<Props> = ({ addTodo }) => {
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const todo: Todo = { title: newTodo, is_done: false } // Declare type for todo
-    // todosApi
-    //   .post(`/todos.json`, todo)
-    //   .then(response => {
-    //     console.log(response)
-    //     const id = response.data.name // Extract id from Firebase response
-    //     const completeTodo = { ...todo, id } // Add id to todo
-    //     addTodo(completeTodo) // Update the parent component's state
-    //     setNewTodo('') // Clear the input
-    //     setError(null) // Clear any previous errors
-    //   })
-    //   .catch(err => {
-    //     console.log(err)
-    //     setError('Failed to add new Todo.') // Set the error message
-    //   })
+    if (!newTodo) {
+      setError('Please enter a todo')
+      return
+    }
+
     addTodo({
       title: newTodo,
       is_done: false,
