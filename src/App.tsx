@@ -1,58 +1,125 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { filterTypes } from './components/enums/filterTypes'
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import AddTodo from './components/todos/AddTodo'
 import Header from './components/layouts/Header'
 import Todo from './components/models/Todo'
 import TodoItem from './components/todos/TodoItem'
 
+const initialState = {
+  todos: [],
+  filter: filterTypes.undone,
+}
+
+interface TodoState {
+  todos: Todo[]
+  filter: filterTypes
+}
+
+type TodoAction =
+  | { type: 'ADD_TODO'; payload: Todo }
+  | { type: 'EDIT_TODO'; payload: { id: string; title: string } }
+  | { type: 'DELETE_TODO'; payload: string }
+  | { type: 'TOGGLE_TODO_STATUS'; payload: string }
+  | { type: 'FILTER_TODOS'; payload: filterTypes }
+  | { type: 'INITIALIZE_TODOS'; payload: Todo[] }
+
+const todoReducer = (state: TodoState, action: TodoAction) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return {
+        ...state,
+        todos: [...state.todos, action.payload],
+      }
+    case 'EDIT_TODO':
+      return {
+        ...state,
+        todos: state.todos.map((todo: Todo) => {
+          if (todo.id === action.payload.id) {
+            todo.title = action.payload.title
+          }
+          return todo
+        }),
+      }
+    case 'DELETE_TODO':
+      return {
+        ...state,
+        todos: state.todos.filter((todo: Todo) => todo.id !== action.payload),
+      }
+    case 'TOGGLE_TODO_STATUS':
+      return {
+        ...state,
+        todos: state.todos.map((todo: Todo) => {
+          if (todo.id === action.payload) {
+            return { ...todo, is_done: !todo.is_done }
+          }
+          return todo
+        }),
+      }
+    case 'FILTER_TODOS':
+      return {
+        ...state,
+        filter: action.payload,
+      }
+
+    case 'INITIALIZE_TODOS':
+      return {
+        ...state,
+        todos: action.payload,
+      }
+
+    default:
+      return state
+  }
+}
+
 function App() {
-  const [todos, setTodos] = useState<Todo[]>([]) // Initialize state
-  const [filter, setFilter] = useState<filterTypes>(filterTypes.undone)
+  const [state, dispatch] = useReducer(todoReducer, initialState)
 
   const addTodo = (newTodo: Todo) => {
-    // Assuming `todos` is an array
-    localStorage.setItem('TODOS', JSON.stringify([...todos, newTodo]))
-    setTodos([...todos, newTodo])
-  }
+    // Always Update localStorage first
+    const updatedTodos = [...state.todos, newTodo]
+    localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
 
-  useEffect(() => {
-    setTodos(JSON.parse(localStorage.getItem('TODOS') || '[]'))
-  }, [])
-
-  const deleteTodo = (id: string): void => {
-    setTodos(todos.filter((todo: Todo) => todo.id !== id))
-    localStorage.setItem(
-      'TODOS',
-      JSON.stringify(todos.filter((todo: Todo) => todo.id !== id)),
-    )
+    // Then dispatch the action to update the state!
+    dispatch({ type: 'ADD_TODO', payload: newTodo })
   }
 
   const editTodo = (id: string, updatedTitle: string): void => {
-    const updatedTodos = todos.map(todo => {
-      if (todo.id === id) {
-        todo.title = updatedTitle
-      }
-      return todo
-    })
-    setTodos(updatedTodos)
+    dispatch({ type: 'EDIT_TODO', payload: { id, title: updatedTitle } })
+  }
+
+  const deleteTodo = (id: string) => {
+    // Update localStorage first
+    const updatedTodos = state.todos.filter((todo: Todo) => todo.id !== id)
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
+
+    // Then dispatch the action to update the state
+    dispatch({ type: 'DELETE_TODO', payload: id })
   }
 
   const toggleTodoStatus = (id: string): void => {
-    const updatedTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return { ...todo, is_done: !todo.is_done }
-      }
-      return todo
-    })
-    setTodos(updatedTodos)
-    localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
+    dispatch({ type: 'TOGGLE_TODO_STATUS', payload: id })
+    // Tip: Don't need to update localStorage here, it's handled in the reducer
   }
 
-  const filteredTodos = todos.filter((todo: Todo) =>
-    filter === filterTypes.done ? todo.is_done : !todo.is_done,
+  const filteredTodos = state.todos.filter((todo: Todo) =>
+    state.filter === filterTypes.done ? todo.is_done : !todo.is_done,
   )
+
+  const setFilter = (newFilter: filterTypes) => {
+    // Dispatch the SET_FILTER action
+    dispatch({ type: 'FILTER_TODOS', payload: newFilter })
+
+    // You can also update localStorage with the new filter value if needed
+    localStorage.setItem('FILTER', JSON.stringify(newFilter))
+  }
+
+  useEffect(() => {
+    const savedTodos = JSON.parse(localStorage.getItem('TODOS') || '[]')
+
+    dispatch({ type: 'INITIALIZE_TODOS', payload: savedTodos })
+  }, [])
 
   return (
     <>
@@ -73,32 +140,38 @@ function App() {
               <div className='d-flex flex-column align-items-center '>
                 <nav className='col-6 mb-3'>
                   <div className='nav nav-tabs' id='nav-tab' role='tablist'>
-                    <a
+                    <button
                       onClick={() => setFilter(filterTypes.undone)}
-                      className={`'nav-item nav-link font-weight-bold' ${
-                        filter === filterTypes.undone ? 'active' : ''
+                      className={`nav-item nav-link font-weight-bold ${
+                        state.filter === filterTypes.undone ? 'active' : ''
                       }`}
                       id='nav-home-tab'
                       role='button'
                     >
                       💬 Undone&nbsp;
                       <span className=' badge-secondary'>
-                        {todos.filter(item => item.is_done === false).length}
+                        {
+                          state.todos.filter(item => item.is_done === false)
+                            .length
+                        }
                       </span>
-                    </a>
-                    <a
+                    </button>
+                    <button
                       onClick={() => setFilter(filterTypes.done)}
                       className={`'nav-item nav-link font-weight-bold' ${
-                        filter === filterTypes.done ? 'active' : ''
+                        state.filter === filterTypes.done ? 'active' : ''
                       }`}
                       id='nav-profile-tab'
                       role='button'
                     >
                       ✅ Done&nbsp;
                       <span className=' badge-success'>
-                        {todos.filter(item => item.is_done === true).length}
+                        {
+                          state.todos.filter(item => item.is_done === true)
+                            .length
+                        }
                       </span>
-                    </a>
+                    </button>
                   </div>
                 </nav>
                 {filteredTodos.map((todo: Todo) => (
