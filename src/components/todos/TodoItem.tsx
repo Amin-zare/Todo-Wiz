@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useReducer } from 'react'
 import Todo from '../models/Todo'
 
 interface Props {
@@ -8,29 +8,52 @@ interface Props {
   toggleTodoStatus: (id: string, is_done: boolean) => void
 }
 
+type TodoAction =
+  | { type: 'SET_IS_EDITING'; payload: boolean }
+  | { type: 'SET_NEW_TITLE'; payload: string }
+
+const todoReducer = (
+  state: { isEditing: boolean; newTitle: string },
+  action: TodoAction,
+) => {
+  switch (action.type) {
+    case 'SET_IS_EDITING':
+      return { ...state, isEditing: action.payload }
+    case 'SET_NEW_TITLE':
+      return { ...state, newTitle: action.payload }
+    default:
+      return state
+  }
+}
+
 const TodoItem: React.FC<Props> = ({
   todo,
   deleteTodo,
   editTodo,
   toggleTodoStatus,
 }) => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [newTitle, setNewTitle] = useState(todo.title)
+  const [state, dispatch] = useReducer(todoReducer, {
+    isEditing: false,
+    newTitle: todo.title,
+  })
+
   const handleEdit = () => {
-    editTodo(todo.id!, newTitle)
-    setIsEditing(false)
+    editTodo(todo.id!, state.newTitle)
+    dispatch({ type: 'SET_IS_EDITING', payload: false })
   }
 
   return (
     <div className='col-6 mb-2'>
       <div className='d-flex justify-content-between align-items-center border rounded p-3'>
-        {isEditing ? (
+        {state.isEditing ? (
           <>
             <input
               id='saveTodo'
               type='text'
-              value={newTitle}
-              onChange={e => setNewTitle(e.target.value)}
+              value={state.newTitle}
+              onChange={e =>
+                dispatch({ type: 'SET_NEW_TITLE', payload: e.target.value })
+              }
               ref={editInputRef => editInputRef && editInputRef.focus()}
             />
             <button
@@ -57,7 +80,9 @@ const TodoItem: React.FC<Props> = ({
               <button
                 type='button'
                 className='btn btn-info btn-sm me-1'
-                onClick={() => setIsEditing(true)}
+                onClick={() =>
+                  dispatch({ type: 'SET_IS_EDITING', payload: true })
+                }
               >
                 Edit
               </button>
