@@ -52,6 +52,11 @@ To run Todo Wiz locally on your machine, follow these steps:
 
 Todo Wiz uses [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) and [Firebase](https://firebase.google.com/docs/reference) to persist your to-do list data. Your tasks, by default, will be saved in your browser's local storage and will be available even after you close the application.
 
+## Why useReducer?
+
+The key advantage of useReducer is that it centralizes state updates and makes it easier to manage complex state logic.
+> It also allows you to pass down the dispatch function to child components, which makes it easier to update the state of the parent component from a child component.
+
 ## Contributing
 
 We welcome contributions from the community. If you'd like to contribute to Todo Wiz, please follow these steps:

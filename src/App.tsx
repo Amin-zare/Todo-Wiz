@@ -1,11 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import Header from './components/layouts/Header'
-import AddTodo from './components/todos/AddTodo'
-import TodoItem from './components/todos/TodoItem'
-import { useEffect, useState } from 'react'
-// import todosApi from '../src/api/apiInstance'
-import Todo from './components/models/Todo'
 import { filterTypes } from './components/enums/filterTypes'
+import { useEffect, useState } from 'react'
+import AddTodo from './components/todos/AddTodo'
+import Header from './components/layouts/Header'
+import Todo from './components/models/Todo'
+import TodoItem from './components/todos/TodoItem'
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]) // Initialize state
@@ -16,6 +15,7 @@ function App() {
     localStorage.setItem('TODOS', JSON.stringify([...todos, newTodo]))
     setTodos([...todos, newTodo])
   }
+
   useEffect(() => {
     setTodos(JSON.parse(localStorage.getItem('TODOS') || '[]'))
   }, [])
