@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Todo from '../models/Todo'
+import { Toaster, toast } from 'sonner'
 
 interface Props {
   todo: Todo
@@ -23,6 +24,7 @@ const TodoItem: React.FC<Props> = ({
 
   return (
     <div className='col-6 mb-2'>
+      <Toaster richColors position='top-right' />
       <div className='d-flex justify-content-between align-items-center border rounded p-3'>
         {isEditing ? (
           <>
@@ -64,7 +66,10 @@ const TodoItem: React.FC<Props> = ({
               <button
                 type='button'
                 className='btn btn-danger btn-sm ml-1'
-                onClick={() => deleteTodo(todo.id!)}
+                onClick={() => {
+                  deleteTodo(todo.id!)
+                  toast.error(todo.title + ' deleted successfully!')
+                }}
               >
                 Delete
               </button>

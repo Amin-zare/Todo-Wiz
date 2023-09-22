@@ -3,9 +3,9 @@ import Header from './components/layouts/Header'
 import AddTodo from './components/todos/AddTodo'
 import TodoItem from './components/todos/TodoItem'
 import { useEffect, useState } from 'react'
-// import todosApi from '../src/api/apiInstance'
 import Todo from './components/models/Todo'
 import { filterTypes } from './components/enums/filterTypes'
+import { Toaster, toast } from 'sonner'
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]) // Initialize state
@@ -15,7 +15,9 @@ function App() {
     // Assuming `todos` is an array
     localStorage.setItem('TODOS', JSON.stringify([...todos, newTodo]))
     setTodos([...todos, newTodo])
+    toast.success(newTodo.title + ' added successfully!')
   }
+
   useEffect(() => {
     setTodos(JSON.parse(localStorage.getItem('TODOS') || '[]'))
   }, [])
@@ -26,6 +28,7 @@ function App() {
       'TODOS',
       JSON.stringify(todos.filter((todo: Todo) => todo.id !== id)),
     )
+    toast.error('Deleted.')
   }
 
   const editTodo = (id: string, updatedTitle: string): void => {
@@ -37,6 +40,7 @@ function App() {
     })
     setTodos(updatedTodos)
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
+    toast.success('Updated.')
   }
 
   const toggleTodoStatus = (id: string): void => {
@@ -48,6 +52,7 @@ function App() {
     })
     setTodos(updatedTodos)
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
+    toast('Status changed.')
   }
 
   const filteredTodos = todos.filter((todo: Todo) =>
@@ -56,6 +61,7 @@ function App() {
 
   return (
     <>
+      <Toaster richColors position='top-right' />
       <div className='App'>
         <Header />
         <main>
