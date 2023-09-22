@@ -2,7 +2,7 @@
 
 Todo Wiz is a simple to-do list application built with React. Being a [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) app at heart, it allows you to manage your tasks, mark them as done, and keep track of your to-do list.
 
-<img alt="TodoIcon" src="/todoicon.png" width="60">
+![Todo Wiz](/demo.gif)
 
 ## Features
 

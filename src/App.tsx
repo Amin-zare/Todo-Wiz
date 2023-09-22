@@ -28,7 +28,6 @@ function App() {
       'TODOS',
       JSON.stringify(todos.filter((todo: Todo) => todo.id !== id)),
     )
-    toast.error('Deleted.')
   }
 
   const editTodo = (id: string, updatedTitle: string): void => {
