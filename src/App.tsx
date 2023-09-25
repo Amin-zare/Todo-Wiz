@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import Todo from './components/models/Todo'
 import { filterTypes } from './components/enums/filterTypes'
 import { Toaster, toast } from 'sonner'
+import todosContext from './Context/Todos'
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]) // Initialize state
@@ -59,6 +60,7 @@ function App() {
   )
 
   return (
+    <todosContext.Provider value={{ addTodo }}>
     <>
       <Toaster richColors position='top-right' />
       <div className='App'>
@@ -70,7 +72,7 @@ function App() {
               <p className='lead text-muted'>
                 Your to-do list is your mental net
               </p>
-              <AddTodo addTodo={addTodo} />
+              <AddTodo />
             </div>
           </section>
           <div className='todosList mt-4'>
@@ -121,6 +123,7 @@ function App() {
         </main>
       </div>
     </>
+    </todosContext.Provider>
   )
 }
 

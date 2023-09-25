@@ -1,14 +1,10 @@
-import React, { useState } from 'react'
-import Todo from '../models/Todo'
+import React, { useState, useContext } from 'react';
+import TodosContext from './../../Context/Todos';
 
-// Define the type for the props expected by AddTodo
-interface Props {
-  addTodo: (todo: Todo) => void
-}
-
-const AddTodo: React.FC<Props> = ({ addTodo }) => {
+const AddTodo: React.FC = () => {
   const [newTodo, setNewTodo] = useState<string>('') // Declare type for state
   const [error, setError] = useState<string | null>(null) // To handle error messages
+  const todosContext = useContext(TodosContext); // Access the context
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,7 +16,7 @@ const AddTodo: React.FC<Props> = ({ addTodo }) => {
 
     setError(null)
 
-    addTodo({
+    todosContext?.addTodo({
       title: newTodo,
       is_done: false,
       id: Math.random().toString(),
