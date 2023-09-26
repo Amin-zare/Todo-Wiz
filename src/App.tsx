@@ -60,7 +60,7 @@ function App() {
   )
 
   return (
-    <todosContext.Provider value={{ addTodo }}>
+    <todosContext.Provider value={{ addTodo ,deleteTodo,editTodo ,toggleTodoStatus }}>
     <>
       <Toaster richColors position='top-right' />
       <div className='App'>
@@ -112,9 +112,6 @@ function App() {
                   <TodoItem
                     key={todo.id}
                     todo={todo}
-                    deleteTodo={deleteTodo}
-                    editTodo={editTodo}
-                    toggleTodoStatus={toggleTodoStatus}
                   />
                 ))}
               </div>

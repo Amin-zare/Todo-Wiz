@@ -1,24 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Todo from '../models/Todo'
 import { Toaster, toast } from 'sonner'
+import TodosContext from './../../Context/Todos';
 
 interface Props {
   todo: Todo
-  deleteTodo: (id: string) => void
-  editTodo: (id: string, updatedTitle: string) => void
-  toggleTodoStatus: (id: string, is_done: boolean) => void
 }
 
 const TodoItem: React.FC<Props> = ({
   todo,
-  deleteTodo,
-  editTodo,
-  toggleTodoStatus,
 }) => {
+  const todosContext = useContext(TodosContext); // Access the context
   const [isEditing, setIsEditing] = useState(false)
   const [newTitle, setNewTitle] = useState(todo.title)
   const handleEdit = () => {
-    editTodo(todo.id!, newTitle)
+    todosContext?.editTodo(todo.id!, newTitle)
     setIsEditing(false)
   }
 
@@ -52,7 +48,7 @@ const TodoItem: React.FC<Props> = ({
                 className={`btn btn-sm me-1 ${
                   todo.is_done ? ' btn-secondary' : 'btn-success'
                 } `}
-                onClick={() => toggleTodoStatus(todo.id!, todo.is_done)}
+                onClick={() => todosContext?.toggleTodoStatus(todo.id!, todo.is_done)}
               >
                 {todo.is_done ? 'Undone' : 'Done'}
               </button>
@@ -67,7 +63,7 @@ const TodoItem: React.FC<Props> = ({
                 type='button'
                 className='btn btn-danger btn-sm ml-1'
                 onClick={() => {
-                  deleteTodo(todo.id!)
+                  todosContext?.deleteTodo(todo.id!)
                   toast.error(todo.title + ' deleted successfully!')
                 }}
               >

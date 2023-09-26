@@ -3,6 +3,9 @@ import Todo from "../components/models/Todo";
 
 interface TodosContext {
     addTodo: (newTodo: Todo) => void;
+    deleteTodo:(id:string)=> void;
+    editTodo: (id: string, updatedTitle: string) => void
+    toggleTodoStatus: (id: string, is_done: boolean) => void
 
   }
 
