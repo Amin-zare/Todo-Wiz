@@ -5,73 +5,13 @@ import AddTodo from './components/todos/AddTodo'
 import Header from './components/layouts/Header'
 import Todo from './components/models/Todo'
 import TodoItem from './components/todos/TodoItem'
+import todoReducer from './components/reducers/appReducer'
 
 const initialState = {
   todos: [],
   filter: filterTypes.undone,
 }
 
-interface TodoState {
-  todos: Todo[]
-  filter: filterTypes
-}
-
-type TodoAction =
-  | { type: 'ADD_TODO'; payload: Todo }
-  | { type: 'EDIT_TODO'; payload: { id: string; title: string } }
-  | { type: 'DELETE_TODO'; payload: string }
-  | { type: 'TOGGLE_TODO_STATUS'; payload: string }
-  | { type: 'FILTER_TODOS'; payload: filterTypes }
-  | { type: 'INITIALIZE_TODOS'; payload: Todo[] }
-
-const todoReducer = (state: TodoState, action: TodoAction) => {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return {
-        ...state,
-        todos: [...state.todos, action.payload],
-      }
-    case 'EDIT_TODO':
-      return {
-        ...state,
-        todos: state.todos.map((todo: Todo) => {
-          if (todo.id === action.payload.id) {
-            todo.title = action.payload.title
-          }
-          return todo
-        }),
-      }
-    case 'DELETE_TODO':
-      return {
-        ...state,
-        todos: state.todos.filter((todo: Todo) => todo.id !== action.payload),
-      }
-    case 'TOGGLE_TODO_STATUS':
-      return {
-        ...state,
-        todos: state.todos.map((todo: Todo) => {
-          if (todo.id === action.payload) {
-            return { ...todo, is_done: !todo.is_done }
-          }
-          return todo
-        }),
-      }
-    case 'FILTER_TODOS':
-      return {
-        ...state,
-        filter: action.payload,
-      }
-
-    case 'INITIALIZE_TODOS':
-      return {
-        ...state,
-        todos: action.payload,
-      }
-
-    default:
-      return state
-  }
-}
 
 function App() {
   const [state, dispatch] = useReducer(todoReducer, initialState)
