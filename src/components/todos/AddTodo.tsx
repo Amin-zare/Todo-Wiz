@@ -1,27 +1,10 @@
 import React, { useReducer } from 'react'
 import Todo from '../models/Todo'
+import todoReducer from '../reducers/AddTodoReducer'
 
 // Define the type for the props expected by AddTodo
 interface Props {
   addTodo: (todo: Todo) => void
-}
-
-type TodoAction =
-  | { type: 'SET_NEW_TODO'; payload: string }
-  | { type: 'SET_ERROR'; payload: string | null }
-
-const todoReducer = (
-  state: { newTodo: string; error: string | null },
-  action: TodoAction,
-) => {
-  switch (action.type) {
-    case 'SET_NEW_TODO':
-      return { ...state, newTodo: action.payload }
-    case 'SET_ERROR':
-      return { ...state, error: action.payload }
-    default:
-      return state
-  }
 }
 
 const AddTodo: React.FC<Props> = ({ addTodo }) => {
