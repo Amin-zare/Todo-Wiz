@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import Home from './routes/Home'
 import { Route, Routes } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
+import TodoPage from './routes/todo/TodoPage'
 
 const About = lazy(() => import('./routes/About'))
 const Contact = lazy(() => import('./routes/Contact'))
@@ -41,6 +42,7 @@ function App() {
               </Suspense>
             }
           />
+          <Route path='/todo/IndexTodo' element={<TodoPage />} />
         </Routes>
       </div>
     </>

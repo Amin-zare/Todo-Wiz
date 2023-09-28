@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Todo from '../models/Todo'
 import { Toaster, toast } from 'sonner'
+import { Link, useLocation } from 'react-router-dom'
 
 interface Props {
   todo: Todo
@@ -21,7 +22,7 @@ const TodoItem: React.FC<Props> = ({
     editTodo(todo.id!, newTitle)
     setIsEditing(false)
   }
-
+  const location = useLocation()
   return (
     <div className='col-6 mb-2'>
       <Toaster richColors position='top-right' />
@@ -45,7 +46,19 @@ const TodoItem: React.FC<Props> = ({
           </>
         ) : (
           <>
-            <div>{todo.title}</div>
+            <Link
+              to={{
+                pathname: '/todo/IndexTodo', // Specifies the path for the route.
+                search: `?status=${todo.is_done}&title=${todo.title}&id=${todo.id}`, // Adding query parameters to the URL.
+
+                hash:
+                  '#Status' + // URL fragment identifier (i.e., after the "#")
+                  location.search, // Preserve any query parameters if coming from another page (e.g., the "About" page).
+              }}
+              className='link-dark tex'
+            >
+              {todo.title}
+            </Link>
             <div>
               <button
                 type='button'
