@@ -7,6 +7,7 @@ import { lazy, Suspense } from 'react'
 
 const About = lazy(() => import('./routes/About'))
 const Contact = lazy(() => import('./routes/Contact'))
+const TodoPage = lazy(() => import('./routes/todo/TodoPage'))
 const NotFound = lazy(() => import('./routes/NotFound'))
 
 function App() {
@@ -38,6 +39,14 @@ function App() {
             element={
               <Suspense fallback={<h2>Loading</h2>}>
                 <NotFound />
+              </Suspense>
+            }
+          />
+          <Route
+            path='/todo/:id' // ':id' acts as a placeholder for a dynamic value. It matches any value at this segment of the URL and makes it available as a param.
+            element={
+              <Suspense fallback={<h2>Loading</h2>}>
+                <TodoPage />
               </Suspense>
             }
           />

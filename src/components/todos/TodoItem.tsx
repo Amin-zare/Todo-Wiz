@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Todo from '../models/Todo'
 import { Toaster, toast } from 'sonner'
+import { Link } from 'react-router-dom'
 
 interface Props {
   todo: Todo
@@ -45,7 +46,12 @@ const TodoItem: React.FC<Props> = ({
           </>
         ) : (
           <>
-            <div>{todo.title}</div>
+            <Link
+              to={{ pathname: `/todo/${todo.id}` }}
+              className='link-dark tex'
+            >
+              {todo.title}
+            </Link>
             <div>
               <button
                 type='button'
