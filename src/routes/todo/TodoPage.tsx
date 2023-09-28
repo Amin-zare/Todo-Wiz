@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import Todo from '../../components/models/Todo'
 
@@ -15,6 +15,7 @@ type TodoParams = {
 }
 
 const TodoPage: React.FC = () => {
+  const navigate = useNavigate()
   const params = useParams<TodoParams>()
   const todos = JSON.parse(localStorage.getItem('TODOS') || '[]') as TodoItem[]
   const tishTodo = todos.find(t => t.id === params.id)
@@ -34,6 +35,14 @@ const TodoPage: React.FC = () => {
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
     if (updatedTodo) setTodo(updatedTodo) // Update the single todo state
     toast('Status changed.')
+  }
+
+  const deleteTodo = (id: string): void => {
+    const updatedTodos = todos.filter(todoItem => todoItem.id !== id)
+    localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
+    const updatedTodo = updatedTodos.find(t => t.id === id)
+    if (updatedTodo) setTodo(updatedTodo) // Update the single todo state
+    navigate('/')
   }
 
   return (
@@ -75,6 +84,16 @@ const TodoPage: React.FC = () => {
             onClick={() => toggleTodoStatus(todo!.id!)}
           >
             {todo?.is_done ? 'Undone' : 'Done'}
+          </button>
+          <button
+            type='button'
+            className='btn btn-danger btn-sm ml-1'
+            onClick={() => {
+              deleteTodo(todo!.id!)
+              toast.error(todo?.title + ' deleted successfully!')
+            }}
+          >
+            Delete
           </button>
         </div>
       </div>
