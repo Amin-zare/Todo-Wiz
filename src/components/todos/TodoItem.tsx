@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Todo from '../models/Todo'
 import { Toaster, toast } from 'sonner'
+import { Link } from 'react-router-dom'
 
 interface Props {
   todo: Todo
@@ -17,6 +18,7 @@ const TodoItem: React.FC<Props> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [newTitle, setNewTitle] = useState(todo.title)
+  const editInputRef = React.createRef<HTMLInputElement>()
   const handleEdit = () => {
     editTodo(todo.id!, newTitle)
     setIsEditing(false)
@@ -33,7 +35,7 @@ const TodoItem: React.FC<Props> = ({
               type='text'
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}
-              ref={editInputRef => editInputRef && editInputRef.focus()}
+              ref={editInputRef}
             />
             <button
               type='button'
@@ -45,7 +47,12 @@ const TodoItem: React.FC<Props> = ({
           </>
         ) : (
           <>
-            <div>{todo.title}</div>
+            <Link
+              to={{ pathname: `/todo/${todo.id}` }}
+              className='link-dark tex'
+            >
+              {todo.title}
+            </Link>
             <div>
               <button
                 type='button'
