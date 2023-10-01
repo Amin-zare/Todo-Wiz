@@ -8,7 +8,7 @@ const Header: React.FC = () => {
         <div className='container d-flex justify-content-between'>
           <a href='/' className='navbar-brand d-flex align-items-center'>
             <strong>
-              <img src='./public/todo-list.jpg' /> TodoWiz
+              <img src='/todo-list.jpg' /> TodoWiz
             </strong>
           </a>
           <button
