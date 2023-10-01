@@ -53,7 +53,7 @@ const TodoItem: React.FC<Props> = ({
         ) : (
           <>
             <Link
-              to={{ pathname: `/todo/${todo.id}`, hash: '# ' }}
+              to={{ pathname: `/todo/${todo.id}` }}
               className='link-dark tex text-decoration-none'
             >
               {todo.title}
