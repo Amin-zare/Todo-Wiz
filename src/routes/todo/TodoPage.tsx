@@ -65,7 +65,7 @@ const TodoPage: React.FC = () => {
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
     const updatedTodo = updatedTodos.find(t => t.id === id)
     setTodo(updatedTodo)
-    toast.success(`${updatedTitle} added Updated.`)
+    toast.success(`${updatedTitle} updated.`)
   }
 
   return (

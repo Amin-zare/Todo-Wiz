@@ -35,7 +35,7 @@ const Home: React.FC = () => {
     )
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
     setTodos(updatedTodos)
-    toast.success(`${updatedTitle} added Updated.`)
+    toast.success(`${updatedTitle} updated.`)
   }
 
   const toggleTodoStatus = (id: string): void => {
