@@ -18,7 +18,6 @@ const TodoItem: React.FC<Props> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [newTitle, setNewTitle] = useState(todo.title)
-  const editInputRef = React.createRef<HTMLInputElement>()
   const handleEdit = () => {
     editTodo(todo.id!, newTitle)
     setIsEditing(false)
@@ -35,7 +34,13 @@ const TodoItem: React.FC<Props> = ({
               type='text'
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}
-              ref={editInputRef}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleEdit()
+                }
+              }}
+              ref={inputRef => inputRef && inputRef.focus()}
             />
             <button
               type='button'
@@ -48,8 +53,8 @@ const TodoItem: React.FC<Props> = ({
         ) : (
           <>
             <Link
-              to={{ pathname: `/todo/${todo.id}` }}
-              className='link-dark tex'
+              to={{ pathname: `/todo/${todo.id}`, hash: '# ' }}
+              className='link-dark tex text-decoration-none'
             >
               {todo.title}
             </Link>

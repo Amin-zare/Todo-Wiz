@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import Home from './routes/Home'
 import { Route, Routes } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
+import './App.css'
 
 const About = lazy(() => import('./routes/About'))
 const Contact = lazy(() => import('./routes/Contact'))

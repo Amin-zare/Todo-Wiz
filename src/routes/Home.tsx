@@ -35,17 +35,21 @@ const Home: React.FC = () => {
     )
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
     setTodos(updatedTodos)
-    toast.success('Updated.')
+    toast.success(`${updatedTitle} added Updated.`)
   }
 
   const toggleTodoStatus = (id: string): void => {
     const updatedTodos = todos.map(todo =>
       todo.id === id ? { ...todo, is_done: !todo.is_done } : todo,
     )
-
+    const updatedTodo = updatedTodos.find(t => t.id === id)
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
     setTodos(updatedTodos)
-    toast('Status changed.')
+    toast.success(
+      `${updatedTodo?.title} Status ${
+        updatedTodo?.is_done ? 'marked done.' : 'marked undone.'
+      }`,
+    )
   }
 
   const filteredTodos = todos.filter(todo =>

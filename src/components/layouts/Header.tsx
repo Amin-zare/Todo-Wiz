@@ -7,7 +7,9 @@ const Header: React.FC = () => {
       <div className='navbar navbar-expand-lg navbar-dark bg-dark shadow-sm'>
         <div className='container d-flex justify-content-between'>
           <a href='/' className='navbar-brand d-flex align-items-center'>
-            <strong>🚀 TodoWiz</strong>
+            <strong>
+              <img src='./public/todo-list.jpg' /> TodoWiz
+            </strong>
           </a>
           <button
             className='navbar-toggler'

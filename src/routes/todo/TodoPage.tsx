@@ -35,7 +35,11 @@ const TodoPage: React.FC = () => {
 
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
     if (updatedTodo) setTodo(updatedTodo) // Update the single todo state
-    toast('Status changed.')
+    toast.success(
+      `${updatedTodo?.title} Status ${
+        updatedTodo?.is_done ? 'marked done.' : 'marked undone.'
+      }`,
+    )
   }
 
   const deleteTodo = (id: string): void => {
@@ -61,16 +65,23 @@ const TodoPage: React.FC = () => {
     localStorage.setItem('TODOS', JSON.stringify(updatedTodos))
     const updatedTodo = updatedTodos.find(t => t.id === id)
     setTodo(updatedTodo)
-    toast.success('Updated.')
+    toast.success(`${updatedTitle} added Updated.`)
   }
 
   return (
     <div className='container mt-5'>
       <div className='card shadow'>
         <h2
+          suppressContentEditableWarning={true}
           ref={titleRef} // Attach a reference to the DOM element
           className='card-header text-center bg-primary text-white'
           contentEditable={isEditing} // Make the content of the <h2> editable based on the `isEditing` state
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              handleEdit()
+            }
+          }}
         >
           {todo?.title || 'No Title Provided'}
         </h2>
@@ -82,7 +93,7 @@ const TodoPage: React.FC = () => {
             </span>
           </p>
           <p className='card-text'>
-            Status:
+            Status:&nbsp;
             <span className={status ? 'text-success ml-2' : 'text-danger ml-2'}>
               {status ? (
                 <i className='fa fa-check-circle'></i>
