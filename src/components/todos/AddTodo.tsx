@@ -23,7 +23,7 @@ const AddTodo: React.FC<Props> = ({ addTodo }) => {
     addTodo({
       title: newTodo,
       is_done: false,
-      id: Math.random().toString(),
+      id: Math.floor(Math.random() * 1000000).toString(),
     })
 
     setNewTodo('')
